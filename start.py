@@ -6,13 +6,11 @@ from config import AboutConfig
 from utils.captcha.captcha import captcha
 import redis
 
-
 app = Flask(__name__)
 app.config.from_object(AboutConfig)
 app.config.update(
     DEBUG=True,
 )
-
 
 redis_conn = redis.StrictRedis(host='127.0.0.1', port=6379)
 
@@ -40,13 +38,12 @@ def get_image_code():
     # 4.删除上次生成的验证码图片
     try:
         if last_uuid:
-            redis_conn.delete('ImageCode:'+last_uuid)
+            redis_conn.delete('ImageCode:' + last_uuid)
         # 3.保存UUID对应的验证码文字信息,设置时长
         redis_conn.set('ImageCode:' + uuid, text, 600)
     except Exception as e:
-        print e
         return '保存图片验证码失败'
-    print redis_conn.get('ImageCode:' + uuid)
+    print(redis_conn.get('ImageCode:' + uuid))
     response = make_response(image)
     response.headers['Content-Type'] = 'image/jpg'
     return response
